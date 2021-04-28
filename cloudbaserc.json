@@ -2,20 +2,48 @@
   "version": "2.0",
   "envId": "hello-cloudbase-4gg7bj4836d2d514",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
-  "functionRoot": "./functions",
-  "functions": [],
+  "functionRoot": "cloudfunctions",
   "framework": {
-    "name": "vuepress-app",
+    "name": "vue",
     "plugins": {
-      "vuepress": {
+      "client": {
         "use": "@cloudbase/framework-plugin-website",
         "inputs": {
           "buildCommand": "npm run build",
-          "outputPath": ".vuepress/dist",
-          "cloudPath": "/vuepress"
+          "outputPath": "dist",
+          "cloudPath": "/vue",
+          "envVariables": {
+            "VUE_APP_ENV_ID": "{{env.ENV_ID}}"
+          }
+        }
+      },
+      "server": {
+        "use": "@cloudbase/framework-plugin-function",
+        "inputs": {
+          "functionRootPath": "cloudfunctions",
+          "functions": [
+            {
+              "name": "vue-echo",
+              "timeout": 5,
+              "envVariables": {},
+              "runtime": "Nodejs10.15",
+              "memory": 128,
+              "aclRule": { "invoke": true }
+            }
+          ]
+        }
+      },
+      "auth": {
+        "use": "@cloudbase/framework-plugin-auth",
+        "inputs": {
+          "configs": [
+            {
+              "platform": "NONLOGIN",
+              "status": "ENABLE"
+            }
+          ]
         }
       }
     }
-  },
-  "region": "ap-shanghai"
+  }
 }
